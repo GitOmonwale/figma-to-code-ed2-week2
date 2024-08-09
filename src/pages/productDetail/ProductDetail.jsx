@@ -1,20 +1,19 @@
 // ProductPage.js
 import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import ProductDetailContext  from '../../contexts/ProductDetailsContext';
-import Button from '../../components/Button'; // Assure-toi que Button est importé correctement
+import ProductDetailContext from '../../contexts/ProductDetailsContext';
+import Button from '../../components/Button';
 
 const colorMap = {
   Green: 'bg-green',
   Olive: 'bg-brown',
   Ocean: 'bg-turquoise',
-  // Ajoute d'autres correspondances si nécessaire
+
 };
 
 const ProductDetail = () => {
-  const { id } = useParams(); // Récupère l'ID du produit depuis l'URL
+  const { id } = useParams();
   const { product, fetchProduct } = useContext(ProductDetailContext);
-
   useEffect(() => {
     fetchProduct(id);
   }, [id, fetchProduct]);
@@ -23,10 +22,7 @@ const ProductDetail = () => {
     return <div>Loading...</div>;
   }
 
-  // Extract the variants from the product data
   const variants = product.variants.edges;
-
-  // Generate a set of unique colors based on variants
   const uniqueColors = new Set(variants.map((variant) => variant.node.title.split(' / ')[1]));
 
   return (
@@ -42,7 +38,7 @@ const ProductDetail = () => {
             {[...uniqueColors].map((color) => (
               <span
                 key={color}
-                className={`rounded-full h-6 w-6 ${colorMap[color] || 'bg-gray-300'}`}
+                className={`rounded-full h-6 w-6 ${colorMap[color]}`}
               ></span>
             ))}
           </div>

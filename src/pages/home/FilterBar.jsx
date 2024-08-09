@@ -7,7 +7,7 @@ const FilterBar = () => {
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   const categories = ['All', 'Accessories', 'Featured', 'Unisex'];
-  
+
 
   const getCountForCategory = (category) => {
     if (category === 'All') return products.length;
