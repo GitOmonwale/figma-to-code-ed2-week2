@@ -1,0 +1,85 @@
+// ProductPage.js
+import React, { useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import ProductDetailContext  from '../../contexts/ProductDetailsContext';
+import Button from '../../components/Button'; // Assure-toi que Button est importé correctement
+
+const colorMap = {
+  Green: 'bg-green',
+  Olive: 'bg-brown',
+  Ocean: 'bg-turquoise',
+  // Ajoute d'autres correspondances si nécessaire
+};
+
+const ProductDetail = () => {
+  const { id } = useParams(); // Récupère l'ID du produit depuis l'URL
+  const { product, fetchProduct } = useContext(ProductDetailContext);
+
+  useEffect(() => {
+    fetchProduct(id);
+  }, [id, fetchProduct]);
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
+
+  // Extract the variants from the product data
+  const variants = product.variants.edges;
+
+  // Generate a set of unique colors based on variants
+  const uniqueColors = new Set(variants.map((variant) => variant.node.title.split(' / ')[1]));
+
+  return (
+    <div>
+      <div className='grid md:grid-cols-2 grid-cols-1 mt-10 gap-10'>
+        <div className='rounded-3xl'>
+          <img src={product.featuredImage.url} alt={product.title} className='rounded-3xl' />
+        </div>
+        <div className='flex flex-col gap-3'>
+          <h2 className='font-chillax font-semibold'>{product.title}</h2>
+          <p className='font-archivo font-semibold'>CAD {variants[0]?.node.price.amount}</p>
+          <div className='flex gap-1'>
+            {[...uniqueColors].map((color) => (
+              <span
+                key={color}
+                className={`rounded-full h-6 w-6 ${colorMap[color] || 'bg-gray-300'}`}
+              ></span>
+            ))}
+          </div>
+          <div className='flex gap-2'>
+            <span className='font-medium font-archivo'>Size:</span>
+            <div className='flex gap-2'>
+              {variants.map((variant) => (
+                <Button key={variant.node.id} buttonNames={variant.node.title} />
+              ))}
+            </div>
+          </div>
+          <div className='grid grid-cols-2 gap-5'>
+            {variants.map((variant) => (
+              <Button key={variant.node.id} buttonNames={variant.node.title} />
+            ))}
+          </div>
+          <div className='flex gap-2 flex-col'>
+            <h3 className='font-chillax font-medium text-black'>Description</h3>
+            <p className='text-gray-300 font-archivo'>{product.description}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className='my-14'>
+        <h2 className='font-chillax font-semibold text-2xl'>You may also like</h2>
+        <div className='md:flex grid md:grid-cols-2 grid-cols-1 w-full md:overflow-x-auto overflow-hidden md:flex-nowrap flex-wrap items-center gap-2 scrollbar-hidden'>
+          {variants.map((variant) => (
+            <div key={variant.node.id} className='flex gap-2 flex-col w-96 flex-shrink-0'>
+              <img src={variant.node.image.url} alt={variant.node.title} className='rounded-xl' />
+              <h3 className='font-chillax font-medium text-black'>{variant.node.title}</h3>
+              <p className='text-gray-300 font-archivo'>CAD {variant.node.price.amount}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
