@@ -4,16 +4,17 @@ import {
   RouterProvider,
   Outlet,
 } from "react-router-dom";
-import {ProductsProvider}  from "./contexts/ProductsContext"
+import { ProductsProvider } from "./contexts/ProductsContext"
 import { ProductDetailProvider } from "./contexts/ProductDetailsContext"
+import { CollectionsProvider } from "./contexts/CollectionsContext";
+import { CartProvider } from "./contexts/CartContext";
 import Home from "./pages/home/Home";
-import ProductDetail from "./pages/productDetail/ProductDetail"; // Correction du nom du composant
+import ProductDetail from "./pages/productDetail/ProductDetail";
 import Cart from "./pages/cart/Cart";
 import Checkout from "./pages/checkout/Checkout";
 import Payment from "./pages/payment/Payment";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
-import {CollectionsProvider} from "./contexts/CollectionsContext";
 
 const Layout = () => {
   return (
@@ -58,14 +59,15 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-
-    <CollectionsProvider>
-      <ProductDetailProvider>
-        <ProductsProvider>
-          <RouterProvider router={router} />
-        </ProductsProvider>
-      </ProductDetailProvider>
-    </CollectionsProvider>
+    <CartProvider>
+      <CollectionsProvider>
+        <ProductDetailProvider>
+          <ProductsProvider>
+            <RouterProvider router={router} />
+          </ProductsProvider>
+        </ProductDetailProvider>
+      </CollectionsProvider>
+    </CartProvider>
   );
 }
 

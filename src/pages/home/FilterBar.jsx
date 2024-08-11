@@ -1,35 +1,67 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import CollectionsContext from '../../contexts/CollectionsContext';
 import ProductsContext from '../../contexts/ProductsContext';
-import FilterButton from './FilterButton.jsx';
+import FilterButton from './FilterButton';
 
-const FilterBar = () => {
+const FilteredBar = ({ setFilteredProducts }) => {
+  const { collections } = useContext(CollectionsContext);
   const { products } = useContext(ProductsContext);
-  const [selectedFilter, setSelectedFilter] = useState('All');
 
-  const categories = ['All', 'Accessories', 'Featured', 'Unisex'];
+  const handleFilter = async (filterType) => {
+    if (filterType === 'all') {
+      setFilteredProducts(products);
+    } else {
+      const col = collections.find(edge => edge.node.handle === filterType);
+      const idCol = col.node.id.split('/').pop();
 
+      let query = `{
+        collection(id: "gid://shopify/Collection/${idCol}") {
+          products(first: 20) {
+            edges {
+              node {
+                id
+                title
+                description
+                featuredImage {
+                  id
+                  url
+                }
+                variants(first: 3) {
+                  edges {
+                    node {
+                      price {
+                        amount
+                        currencyCode
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }`;
 
-  const getCountForCategory = (category) => {
-    if (category === 'All') return products.length;
-    return products.filter(product => product.node.category === category).length;
-  };
-
-  const handleFilterChange = (filter) => {
-    setSelectedFilter(filter);
+      try {
+        const request = await fetch(`https://mock.shop/api?query=${encodeURIComponent(query)}`);
+        const response = await request.json();
+        setFilteredProducts(response.data.collection.products.edges);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des produits :", error);
+      }
+    }
   };
 
   return (
-    <div className="flex flex-wrap my-4 items-center justify-center gap-5">
-      {categories.map(category => (
-        <FilterButton
-          key={category}
-          label={category}
-          count={getCountForCategory(category)}
-          onClick={handleFilterChange}
-        />
-      ))}
+    <div className='flex items-center justify-center'>
+      <div className='flex gap-4'>
+        <FilterButton label="All" filterType="all" handleFilter={handleFilter} />
+        <FilterButton label="Accessories" filterType="accessories" handleFilter={handleFilter} />
+        <FilterButton label="Featured" filterType="featured" handleFilter={handleFilter} />
+        <FilterButton label="Unisex" filterType="unisex" handleFilter={handleFilter} />
+      </div>
     </div>
   );
 };
 
-export default FilterBar;
+export default FilteredBar;

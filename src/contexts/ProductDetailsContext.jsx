@@ -1,5 +1,3 @@
-//
-import { data } from 'autoprefixer';
 import React, { createContext, useState } from 'react';
 
 const ProductDetailContext = createContext();

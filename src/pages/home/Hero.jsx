@@ -3,12 +3,12 @@ import arrowTopRight from '../../assets/arrowTopRight.svg'
 import bgHero from '../../assets/bg-hero.png'
 const Hero = () => {
     return (
-        <div className='h-full w-full bg-center bg-cover rounded-3xl mt-14'
+        <div className='h-full w-full bg-center bg-cover rounded-3xl mt-40 mb-10'
             style={{
                 backgroundImage: `url(${bgHero})`,
             }}
         >
-            <div className='h-full w-full flex justify-center items-center rounded-3xl md:px-10 px-5'>
+            <div className='h-full w-full bg-black bg-opacity-25 flex justify-center items-center rounded-3xl md:px-10 px-5'>
                 <div className='flex flex-col items-center justify-between gap-5 max-w-3xl py-10'>
                     <div className='flex items-center justify-center gap-2 px-4'>
                         <hr className='border-white border-[1px] w-20' />
@@ -28,6 +28,5 @@ const Hero = () => {
         </div>
     )
 }
-
 
 export default Hero

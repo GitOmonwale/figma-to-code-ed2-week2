@@ -1,13 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import ProductsContext from '../../contexts/ProductsContext';
 import ProductCard from '../../components/ProductCard';
 import FilterBar from './FilterBar';
 import Loader from '../../components/Loader';
 
 const Discover = () => {
-  const { products, loading, error } = useContext(ProductsContext);
+  const { products } = useContext(ProductsContext);  
+  const [filteredProducts, setFilteredProducts] = useState(products); 
   const [visibleCount, setVisibleCount] = useState(6);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]); 
 
   const handleViewMore = () => {
     setIsLoadingMore(true);
@@ -20,33 +25,28 @@ const Discover = () => {
   const handleViewLess = () => {
     setVisibleCount(6);
   };
-
-  if (loading) return <Loader />
-  if (error) return <p>Error: {error.message}</p>;
-
+ 
   return (
     <>
-      <h2 className='font-semibold text-center text-black font-chillax text-2xl mb-10'>Discover the latest trends in summer fashion. Shop now and refresh your wardrobe with our stylish summer shirts.
+      <h2 className='font-semibold text-center text-black font-chillax text-2xl mb-10'>
+        Discover the latest trends in summer fashion. Shop now and refresh your wardrobe with our stylish summer shirts.
       </h2>
-      <FilterBar></FilterBar>
-      <div className='md:px-20 px-0 mt-10'>
-        <div className='grid grid-cols-3 gap-4'>
-          {products.slice(0, visibleCount).map(product => (
-            <ProductCard key={product.node.id} product={product} />
+      <FilterBar setFilteredProducts={setFilteredProducts} />
+      <div className='lg:px-20 md:px-10 px-0 mt-10'>
+        <div className='grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4'>
+          {filteredProducts.slice(0, visibleCount).map(filteredProduct => (
+            <ProductCard key={filteredProduct.node.id} product={filteredProduct} />
           ))}
         </div>
-        {visibleCount < products.length && (
+        {visibleCount < filteredProducts.length && (
           <div className="flex justify-center mt-4">
             <button
               onClick={handleViewMore}
               className="border-[1px] border-black  text-black hover:text-white bg-transparent hover:bg-black transition-all duration-100 scale-105 px-4 py-1 rounded-full flex items-center gap-1"
             >
               View More
-              {isLoadingMore && (
-                <Loader />
-              )}
+              {isLoadingMore && <Loader />}
             </button>
-
           </div>
         )}
         {visibleCount > 6 && (
@@ -61,7 +61,6 @@ const Discover = () => {
         )}
       </div>
     </>
-
   );
 };
 
