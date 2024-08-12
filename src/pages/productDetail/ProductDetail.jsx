@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductDetailContext from '../../contexts/ProductDetailsContext';
 import Button from '../../components/Button';
-
+import SizeButton from './SizeButton';
 const colorMap = {
   Green: 'bg-green',
   Olive: 'bg-brown',
@@ -36,7 +36,11 @@ const ProductDetail = () => {
           <h2 className='font-chillax font-semibold'>{product.title}</h2>
           <p className='font-archivo font-semibold'>CAD {variants[0]?.node.price.amount}</p>
 
-          <div className='flex gap-1'>
+          {!Number.isInteger(Number(variants[0].node.title.trim())) && 
+            (
+             <div>
+               <p>Color: {variants[0].node.title.split('/')[1].trim()}</p>
+              <div className='flex gap-1'>
             {[...uniqueColors].map((color) => (
               <span
                 key={color}
@@ -44,13 +48,24 @@ const ProductDetail = () => {
               ></span>
             ))}
           </div>
+             </div>
+            )
+          }
+          
           <div className='flex gap-2 flex-col'>
             <span className='font-medium font-archivo'>Size:</span>
-            <div className='flex gap-2'>
-              {variants.map((variant) => (
-                <Button key={variant.node.id} buttonNames={variant.node.title} />
-              ))}
-            </div>
+            {Number.isInteger(Number(variants[0].node.title.trim())) ? (
+              <div className='flex gap-2'>
+                {variants.map((variant) => (
+                  <Button key={variant.node.id} buttonNames={variant.node.title} />
+                ))}
+              </div>
+            ) : (
+              <SizeButton size={variants[0].node.title.split('/')[0].trim()} />
+            )
+            }
+
+
           </div>
           <div className='grid grid-cols-2 gap-5'>
             <Button buttonNames={add} />
@@ -69,7 +84,7 @@ const ProductDetail = () => {
           {variants.map((variant) => (
             <div key={variant.node.id} className='flex gap-2 flex-col sm:w-96 w-full flex-shrink-0'>
               <img src={variant.node.image.url} alt={variant.node.title} className='rounded-xl' />
-              <h3 className='font-chillax font-medium text-black'>{variant.node.title}</h3>
+              <h3 className='font-chillax font-medium text-black'>{product.title}</h3>
               <p className='text-gray-300 font-archivo'>CAD {variant.node.price.amount}</p>
             </div>
           ))}

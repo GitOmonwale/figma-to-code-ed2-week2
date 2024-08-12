@@ -38,8 +38,6 @@ const Cart = () => {
                     </div>
                     <div className='flex flex-col gap-1'>
                       <span>{item.title}</span>
-                      
-                      <span>#{item.id}</span>
                     </div>
                   </div>
                   <div className='grid grid-cols-2 items-center'>

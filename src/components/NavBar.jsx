@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import user from '../assets/user.svg';
 import search from '../assets/search.svg';
 import menu from '../assets/hambuger-menu.svg';
 import cross from '../assets/cross.svg';
-import bag from '../assets/bag.svg'
+import bag from '../assets/bag.svg';
+import CartContext from '../contexts/CartContext'
 const NavBar = () => {
+    const { cart } = useContext(CartContext)
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -25,39 +28,39 @@ const NavBar = () => {
                 {/* Logo */}
 
                 {/* Navigation for larger screens */}
-                    <nav className='hidden lg:flex gap-4'>
-                        <Link to="/">Men</Link>
-                        <Link to="/">Women</Link>
-                        <Link to="/">Kids</Link>
-                        <Link to="/">Collections</Link>
-                    </nav>
-                    <img src={logo} alt="Logo" width={150} />
-                    <nav className='hidden lg:flex items-center gap-4'>
-                        <Link to="/">Shop</Link>
-                        <Link to="/">About us</Link>
-                        <div className='flex items-center gap-2'>
-                            <img src={user} alt="User" />
-                            <span>Account</span>
-                        </div>
-                        <Link to="/">Cart(0)</Link>
-                        <img src={search} alt="Search" />
-                    </nav>
+                <nav className='hidden lg:flex gap-4'>
+                    <Link to="/">Men</Link>
+                    <Link to="/">Women</Link>
+                    <Link to="/">Kids</Link>
+                    <Link to="/">Collections</Link>
+                </nav>
+                <img src={logo} alt="Logo" width={150} />
+                <nav className='hidden lg:flex items-center gap-4'>
+                    <Link to="/">Shop</Link>
+                    <Link to="/">About us</Link>
+                    <div className='flex items-center gap-2'>
+                        <img src={user} alt="User" />
+                        <span>Account</span>
+                    </div>
+                    <Link to="/cart">Cart({cart.length})</Link>
+                    <img src={search} alt="Search" />
+                </nav>
                 <div className='lg:hidden flex gap-2'>
                     <img src={search} alt="Search" />
-                    <img src={bag} alt="" />
+<Link to="/cart"><img src={bag} alt="" /></Link>
                 </div>
 
                 {/* Mobile Menu */}
                 {isMenuOpen && (
                     <div className='fixed top-0 left-0 w-full h-screen bg-white text-black lg:hidden z-50'>
                         <div className='bg-black text-white py-2 text-center'>
-                Sign up and get 20% off for all new arrivals collections
-            </div>
+                            Sign up and get 20% off for all new arrivals collections
+                        </div>
                         <div className='flex justify-between px-5 py-6 items-center'>
                             <img src={cross} alt="close menu" width={24} onClick={toggleMenu} />
                             <div className='flex gap-2'>
                                 <img src={search} alt="Search" />
-                                <img src={bag} alt="" />
+                                <Link to="/cart"><img src={bag} alt="" /></Link>
                             </div>
                         </div>
                         <hr className='h-1 lg:mx-20 md:mx-14 sm:mx-10 mx-5' />
