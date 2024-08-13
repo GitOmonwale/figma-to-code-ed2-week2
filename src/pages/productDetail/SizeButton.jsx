@@ -14,7 +14,7 @@ const SizeButton = ({ size }) => {
       case 'extra large':
         return 'XL';
       default:
-        return size;
+        return '';
     }
   };
 

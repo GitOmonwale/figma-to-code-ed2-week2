@@ -1,5 +1,8 @@
 import React from 'react';
+import { useContext } from 'react';
 import InputField from './InputField'
+import { Link } from 'react-router-dom';
+import CartContext from '../../contexts/CartContext';
 
 const inputFields = [
   { label: 'First Name', name: 'firstName', placeholder: 'Enter your first name', type: 'text' },
@@ -12,8 +15,9 @@ const inputFields = [
 ];
 
 const Checkout = () => {
+  const { cart } = useContext(CartContext)
   return (
-    <div className='font-archivo'>
+    <div className='font-archivo mt-40'>
       <h1 className='align-left text-xl font-bold my-5'>Checkout</h1>
       <div className='grid lg:grid-cols-2 grid-cols-1 lg:gap-32 md:gap-16 gap-10'>
         <div className='col-span-1'>
@@ -23,24 +27,28 @@ const Checkout = () => {
           <div className='font-medium text-gray-300'>
             By placing your order, you agree to Ballamas <span className='underline text-black'>Privacy</span> and <span className='underline text-black'> Policy</span>.
           </div>
-          <div className='flex justify-between items-center py-5'>
-            <div className=' flex justify-start gap-2'>
-              <div className='bg-red rounded-xl h-20 w-10'>
-
-              </div>
-              <div className='flex flex-col gap-1'>
-                <span>T-short</span>
-                <div className='flex text-gray-300 gap-1'>
-                  <span>Color: green</span>
-                  -
-                  <span>
-                    Size: Small
-                  </span>
+          {
+            cart.map((item) => {
+              <div className='flex justify-between items-center py-5'>
+                <div className=' flex justify-start gap-2'>
+                <img src={item.featuredImage.url} className='rounded-lg' alt={item.title} width={70} height={70} />
+                  <div className='flex flex-col gap-1'>
+                    <span>item.title</span>
+                    {item.variants.edges[0].node.title.includes('/') ? (
+                        <div className='flex gap-1 text-gray-300'>
+                          <p>Color: {item.variants.edges[0].node.title.split('/')[1].trim()}</p>
+                          <span>-</span>
+                          <p>Size: {item.variants.edges[0].node.title.split('/')[0].trim()}</p>
+                        </div>
+                      ) : (
+                        <p className=' text-gray-300'>Size: {item.variants.edges[0].node.title}</p>
+                      )}
+                  </div>
                 </div>
+                <div className='font-bold'>${item.variants.edges[0].node.price.amount * item.amount}</div>
               </div>
-            </div>
-            <div className='font-bold'>$174.00</div>
-          </div>
+            })
+          }
           <div>
             <h4>Discount code</h4>
             <div className='grid grid-cols-3 gap-2'>
