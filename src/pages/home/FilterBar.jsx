@@ -54,7 +54,7 @@ const FilteredBar = ({ setFilteredProducts }) => {
 
   return (
     <div className='flex items-center justify-center flex-wrap'>
-      <div className='flex gap-4'>
+      <div className='flex gap-4 flex-wrap'>
         <FilterButton label="All" filterType="all" handleFilter={handleFilter} />
         <FilterButton label="Accessories" filterType="accessories" handleFilter={handleFilter} />
         <FilterButton label="Featured" filterType="featured" handleFilter={handleFilter} />

@@ -19,7 +19,7 @@ const NavBar = () => {
             <div className='bg-black text-white py-2 text-center'>
                 Sign up and get 20% off for all new arrivals collections
             </div>
-            <div className='bg-white py-5 flex justify-between items-center  lg:mx-20 md:mx-14 sm:mx-10 mx-5 relative'>
+            <div className='bg-white py-5 flex justify-between items-center  lg:px-20 md:px-14 sm:px-10 px-5 relative'>
                 {/* Menu Toggle Button */}
                 <button className='lg:hidden' onClick={toggleMenu}>
                     <img src={isMenuOpen ? cross : menu} alt="menu toggle" width={24} />
@@ -47,7 +47,7 @@ const NavBar = () => {
                 </nav>
                 <div className='lg:hidden flex gap-2'>
                     <img src={search} alt="Search" />
-<Link to="/cart"><img src={bag} alt="" /></Link>
+                    <Link to="/cart"><img src={bag} alt="" /></Link>
                 </div>
 
                 {/* Mobile Menu */}
@@ -56,8 +56,9 @@ const NavBar = () => {
                         <div className='bg-black text-white py-2 text-center'>
                             Sign up and get 20% off for all new arrivals collections
                         </div>
-                        <div className='flex justify-between px-5 py-6 items-center'>
+                        <div className='flex justify-between md:px-14 sm:px-10 px-5 py-6 items-center'>
                             <img src={cross} alt="close menu" width={24} onClick={toggleMenu} />
+                            <img src={logo} alt="Logo" width={150} />
                             <div className='flex gap-2'>
                                 <img src={search} alt="Search" />
                                 <Link to="/cart"><img src={bag} alt="" /></Link>
