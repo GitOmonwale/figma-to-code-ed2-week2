@@ -6,6 +6,7 @@ import CartContext from '../../contexts/CartContext';
 import Button from '../../components/Button';
 import SizeButton from './SizeButton';
 
+// Mappage des noms de couleurs avec les classes CSS de Tailwind pour les couleurs de fond
 const colorMap = {
   Green: 'bg-green',
   Purple: 'bg-purple',
@@ -13,6 +14,7 @@ const colorMap = {
   Olive: 'bg-brown',
 };
 
+// Fonction pour mélanger un tableau (utilisée pour choisir des produits aléatoires)
 const shuffleArray = (array) => {
   let shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -23,13 +25,25 @@ const shuffleArray = (array) => {
 };
 
 const ProductDetail = () => {
+  // Extraction de l'ID du produit depuis l'URL
   const { id } = useParams();
+
+  // Accès au contexte des détails du produit
   const { product, fetchProduct } = useContext(ProductDetailContext);
+
+  // État pour stocker les produits aléatoires
   const [randomProducts, setRandomProducts] = useState([]);
+
+  // Accès au contexte des produits (liste complète des produits)
   const { products } = useContext(ProductsContext);
+
+  // Accès au contexte du panier pour ajouter des produits
   const { addToCart } = useContext(CartContext);
+
+  // État pour stocker la variante sélectionnée du produit
   const [selectedVariant, setSelectedVariant] = useState(null);
 
+  // useEffect pour recharger la page lorsque l'onglet devient visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -42,30 +56,34 @@ const ProductDetail = () => {
     };
   }, []);
 
-
-
+  // useEffect pour récupérer les détails du produit lorsque l'ID change
   useEffect(() => {
     fetchProduct(id);
   }, [id, fetchProduct]);
-  
+
+  // useEffect pour sélectionner des produits aléatoires lorsque la liste de produits est disponible
   useEffect(() => {
     if (products.length) {
       setRandomProducts(shuffleArray(products).slice(0, 4));
     }
   }, [products]);
-  
+
+  // useEffect pour définir la première variante du produit comme sélectionnée par défaut
   useEffect(() => {
     if (product && !selectedVariant) {
       setSelectedVariant(product.variants.edges[0].node);
     }
   }, [product, selectedVariant]);
 
+  // Affichage d'un message de chargement si les détails du produit ne sont pas encore disponibles
   if (!product) {
     return <div>Loading...</div>;
   }
 
+  // Récupération des variantes du produit
   const variants = product.variants.edges;
 
+  // Fonction pour gérer la sélection d'une variante
   const handleVariantSelect = (variant) => {
     setSelectedVariant(variant.node);
   };
@@ -108,33 +126,38 @@ const ProductDetail = () => {
             </div>
           )}
 
-<div className='flex gap-2 flex-col'>
-  <span className='font-medium font-archivo'>Size:</span>
+          <div className='flex gap-2 flex-col'>
+            <span className='font-medium font-archivo'>Size:</span>
 
-  {/* Si le titre est un entier */}
-  {Number.isInteger(Number(variants[0].node.title.trim())) ? (
-    <div className='flex gap-2'>
-      {variants.map((variant) => (
-        <Button key={variant.node.id} buttonNames={variant.node.title} />
-      ))}
-    </div>
-  ) : (
-    <>
-      {/* Si le titre contient un / */}
-      {variants[0].node.title.includes('/') ? (
-        <SizeButton size={selectedVariant ? selectedVariant.title.split('/')[0].trim() : variants[0].node.title.split('/')[0].trim()} />
-      ) : (
-        <div>
-          {/* Si le titre est une chaîne de caractères sans / */}
-          <p><SizeButton size={selectedVariant ? selectedVariant.title : variants[0].node.title}/></p>
-        </div>
-      )}
-    </>
-  )}
-</div>
+            {/* Si le titre est un entier (ex: tailles numérotées) */}
+            {Number.isInteger(Number(variants[0].node.title.trim())) ? (
+              <div className='flex gap-2'>
+                {variants.map((variant) => (
+                  <Button key={variant.node.id} buttonNames={variant.node.title} />
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* Si le titre contient un slash, indiquant couleur/size */}
+                {variants[0].node.title.includes('/') ? (
+                  <SizeButton size={selectedVariant ? selectedVariant.title.split('/')[0].trim() : variants[0].node.title.split('/')[0].trim()} />
+                ) : (
+                  <div>
+                    {/* Si le titre est une chaîne de caractères sans slash */}
+                    <p><SizeButton size={selectedVariant ? selectedVariant.title : variants[0].node.title} /></p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
 
           <div className='grid grid-cols-2 gap-5'>
-            <button onClick={() => addToCart(product, product.id)} className="border-[1px] border-black text-black hover:text-white bg-transparent hover:bg-black transition-all duration-100 scale-105 px-4 py-2 rounded-full">
+            <button 
+            onClick={() => 
+            {addToCart(product, product.id);
+              alert('Your product has been successfully added to the cart!');  
+            }} 
+            className="border-[1px] border-black text-black hover:text-white bg-transparent hover:bg-black transition-all duration-100 scale-105 px-4 py-2 rounded-full">
               Add to cart
             </button>
             <button className="border-[1px] border-black text-black hover:text-white bg-transparent hover:bg-black transition-all duration-100 scale-105 px-4 py-2 rounded-full">
@@ -151,14 +174,14 @@ const ProductDetail = () => {
       <div className='my-14'>
         <h2 className='font-chillax font-semibold text-3xl mb-5'>You may also like</h2>
         <div className='sm:flex grid sm:grid-cols-2 grid-cols-1 w-full sm:overflow-x-auto overflow-hidden sm:flex-nowrap flex-wrap items-center gap-2 scrollbar-hidden'>
-        {randomProducts.map((product) => (
-          <div key={product.node.id} className='flex gap-2 flex-col sm:w-96 w-full flex-shrink-0'>
-            <img src={product.node.featuredImage.url} alt={product.node.title} className='rounded-xl' />
-            <h3 className='font-chillax font-medium text-black'>{product.node.title}</h3>
-            <p className='text-gray-300 font-archivo'>CAD {product.node.variants.edges[0]?.node.price.amount}</p>
-          </div>
-        ))}
-      </div>
+          {randomProducts.map((product) => (
+            <div key={product.node.id} className='flex gap-2 flex-col sm:w-96 w-full flex-shrink-0'>
+              <img src={product.node.featuredImage.url} alt={product.node.title} className='rounded-xl' />
+              <h3 className='font-chillax font-medium text-black'>{product.node.title}</h3>
+              <p className='text-gray-300 font-archivo'>CAD {product.node.variants.edges[0]?.node.price.amount}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -81,13 +81,11 @@ const Cart = () => {
           <div>
             <div className='flex items-center justify-between text-gray-300'>
               <span>Subtotal</span>
-
               <span className='flex items-center justify-center'>
                 <span className='text-xs'>$</span>
                 <span>{
                   cart.reduce((total, item) => total + (item.variants.edges[0].node.price.amount * item.amount), 0).toFixed(2)
                 }</span>
-
               </span>
             </div>
             <div className='flex items-center justify-between text-gray-300'>

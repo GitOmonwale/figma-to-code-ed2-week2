@@ -165,7 +165,7 @@ const Checkout = () => {
                 <select
                   name='religion'
                   className='bg-transparent text-black rounded-full w-full p-4 border border-black mt-2'>
-                  <option value="" disabled selected>Select your religion</option>
+                  <option value="" disabled>Select your religion</option>
                   <option value="christianity">Christianity</option>
                   <option value="islam">Islam</option>
                   <option value="hinduism">Hinduism</option>
@@ -186,8 +186,7 @@ const Checkout = () => {
               ))}
             </div>
           </div>
-        </div>
-        <div className="mb-20">
+          <div className="mb-20 mt-10">
           <div className='grid grid-cols-2 gap-4'>
           <PaymentMethodCard
             isSelected={selectedCard === 'card1'}
@@ -196,7 +195,6 @@ const Checkout = () => {
              <img src={card} alt="icon " width={30} height={30}/>
             <p>Debit / Credit Card</p>
           </PaymentMethodCard>
-
           <PaymentMethodCard
             isSelected={selectedCard === 'card2'}
             onSelect={() => handleCardSelect('card2')}
@@ -231,13 +229,13 @@ const Checkout = () => {
               <span>Pay</span>
               <p className='flex items-center justify-center'>
               <span className='text-xs'>$</span>
-              <span>{cart.reduce((total, item) => total + (item.variants.edges[0].node.price.amount * item.amount), 0).toFixed(2) + inputValue}</span>
+              <span>{cart.reduce((total, item) => total + (item.variants.edges[0].node.price.amount * item.amount), 0).toFixed(2) - inputValue}</span>
               </p>
                <img src={arrowRight} alt="" />
             </button>
             </Link>
         </div>
-       
+        </div>
       </div>
     </div>
   );
